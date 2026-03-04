@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YouTube Grid Columns</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <h1>YouTube Columns</h1>
+      <p class="hint">Videos per row: <strong id="valueText">4</strong></p>
+      <input id="columnRange" type="range" min="2" max="8" step="1" value="4" />
+      <button id="applyBtn" type="button">Apply</button>
+      <p id="statusText" class="status"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
+
