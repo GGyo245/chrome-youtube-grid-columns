@@ -1,4 +1,4 @@
-﻿const DEFAULT_COLUMNS = 4;
+const DEFAULT_COLUMNS = 4;
 const valueText = document.getElementById("valueText");
 const columnRange = document.getElementById("columnRange");
 const applyBtn = document.getElementById("applyBtn");
@@ -107,5 +107,4 @@ applyBtn.addEventListener("click", async () => {
 loadSavedColumns().catch((error) => {
   setStatus(`Init failed: ${error.message}`);
 });
-
 

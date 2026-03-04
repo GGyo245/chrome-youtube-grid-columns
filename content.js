@@ -1,4 +1,4 @@
-﻿const DEFAULT_COLUMNS = 4;
+const DEFAULT_COLUMNS = 4;
 const MIN_COLUMNS = 2;
 const MAX_COLUMNS = 8;
 const STYLE_ID = "yt-grid-columns-controller-style";
@@ -87,7 +87,7 @@ function isShortsItem(item) {
       ?.toLowerCase();
     const isNewsShelf = Boolean(
       shelfTitle &&
-        ["?댁뒪 ?띾낫", "breaking news", "top news", "news", "?뗣깷?쇈궧?잌젿", "?잌젿?뗣깷?쇈궧"].some((keyword) =>
+        ["뉴스 속보", "breaking news", "top news", "news", "ニュース速報", "速報ニュース"].some((keyword) =>
           shelfTitle.includes(keyword)
         )
     );
@@ -212,5 +212,4 @@ ensureRootObserver();
 loadAndApply().catch(() => {
   applyColumns(DEFAULT_COLUMNS);
 });
-
 
