@@ -1,4 +1,4 @@
-const DEFAULT_COLUMNS = 4;
+﻿const DEFAULT_COLUMNS = 4;
 const valueText = document.getElementById("valueText");
 const columnRange = document.getElementById("columnRange");
 const applyBtn = document.getElementById("applyBtn");
@@ -89,10 +89,14 @@ applyBtn.addEventListener("click", async () => {
     await storageSet({ youtubeColumns: columns });
 
     const tabId = await getActiveYouTubeTabId();
-    await tabsSendMessage(tabId, {
+    const response = await tabsSendMessage(tabId, {
       type: "set_columns",
       columns
     });
+
+    if (response && response.ok === false) {
+      throw new Error(response.error || "Failed to apply settings on this page.");
+    }
 
     setStatus("Applied.");
   } catch (error) {
@@ -103,4 +107,5 @@ applyBtn.addEventListener("click", async () => {
 loadSavedColumns().catch((error) => {
   setStatus(`Init failed: ${error.message}`);
 });
+
 

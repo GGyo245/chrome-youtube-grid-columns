@@ -1,4 +1,4 @@
-const DEFAULT_COLUMNS = 4;
+﻿const DEFAULT_COLUMNS = 4;
 const MIN_COLUMNS = 2;
 const MAX_COLUMNS = 8;
 const STYLE_ID = "yt-grid-columns-controller-style";
@@ -87,7 +87,7 @@ function isShortsItem(item) {
       ?.toLowerCase();
     const isNewsShelf = Boolean(
       shelfTitle &&
-        ["뉴스 속보", "breaking news", "top news", "news", "ニュース速報", "速報ニュース"].some((keyword) =>
+        ["?댁뒪 ?띾낫", "breaking news", "top news", "news", "?뗣깷?쇈궧?잌젿", "?잌젿?뗣깷?쇈궧"].some((keyword) =>
           shelfTitle.includes(keyword)
         )
     );
@@ -185,9 +185,17 @@ async function loadAndApply() {
   applyColumns(result.youtubeColumns);
 }
 
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!message || message.type !== "set_columns") return;
-  applyColumns(message.columns);
+
+  try {
+    applyColumns(message.columns);
+    sendResponse({ ok: true, columns: currentColumns });
+  } catch (error) {
+    sendResponse({ ok: false, error: error instanceof Error ? error.message : String(error) });
+  }
+
+  return true;
 });
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
@@ -204,4 +212,5 @@ ensureRootObserver();
 loadAndApply().catch(() => {
   applyColumns(DEFAULT_COLUMNS);
 });
+
 
