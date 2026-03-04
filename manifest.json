@@ -1,6 +1,6 @@
 ﻿{
   "manifest_version": 3,
-  "name": "YouTube Grid Columns Controller",
+  "name": "YouTube Grid Simple",
   "version": "0.1.5",
   "description": "Adjust YouTube video grid columns (2-8) and hide Shorts shelves.",
   "icons": {
@@ -20,6 +20,7 @@
     }
   ]
 }
+
 
 
 
