@@ -1,7 +1,7 @@
-{
+﻿{
   "manifest_version": 3,
   "name": "YouTube Grid Columns Controller",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Adjust YouTube video grid columns (2-8) and hide Shorts shelves.",
   "icons": {
     "128": "icon-128.png"
@@ -11,13 +11,15 @@
     "default_popup": "popup.html"
   },
   "permissions": ["storage", "tabs"],
-  "host_permissions": ["*://www.youtube.com/*"],
+  "host_permissions": ["*://www.youtube.com/"],
   "content_scripts": [
     {
-      "matches": ["*://www.youtube.com/*"],
+      "matches": ["*://www.youtube.com/"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
   ]
 }
+
+
 
