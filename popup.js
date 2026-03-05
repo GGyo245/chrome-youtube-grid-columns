@@ -25,6 +25,14 @@ function setStatus(message) {
   statusText.textContent = message;
 }
 
+function isMissingReceiverError(message) {
+  if (!message) return false;
+  return (
+    message.includes("Receiving end does not exist") ||
+    message.includes("Could not establish connection")
+  );
+}
+
 function renderValue(value) {
   valueText.textContent = String(value);
   setRangeFill(value);
@@ -134,13 +142,21 @@ applyBtn.addEventListener("click", async () => {
 
     setStatus("Applied.");
   } catch (error) {
-    setStatus(`Failed: ${error.message}`);
+    const message = error instanceof Error ? error.message : String(error);
+    if (isMissingReceiverError(message)) {
+      setStatus("Refresh the YouTube tab, then try again.");
+      return;
+    }
+    setStatus(`Failed: ${message}`);
   }
 });
+
 
 loadSavedColumns().catch((error) => {
   setStatus(`Init failed: ${error.message}`);
 });
 
 applyThemeFromActiveTab();
+
+
 
