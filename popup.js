@@ -1,8 +1,25 @@
-const DEFAULT_COLUMNS = 4;
+﻿const DEFAULT_COLUMNS = 4;
 const valueText = document.getElementById("valueText");
 const columnRange = document.getElementById("columnRange");
 const applyBtn = document.getElementById("applyBtn");
 const statusText = document.getElementById("statusText");
+
+function setRangeFill(value) {
+  const min = Number(columnRange.min) || 0;
+  const max = Number(columnRange.max) || 100;
+  const num = Number(value);
+  if (!Number.isFinite(num) || max <= min) return;
+
+  const pct = ((num - min) / (max - min)) * 100;
+  const clamped = Math.max(0, Math.min(100, pct));
+  document.body.style.setProperty("--ytgc-range-pct", `${clamped}%`);
+}
+
+function setTheme(theme) {
+  const isDark = theme === "dark";
+  document.body.classList.toggle("theme-dark", isDark);
+  document.body.classList.toggle("theme-light", !isDark);
+}
 
 function setStatus(message) {
   statusText.textContent = message;
@@ -10,6 +27,7 @@ function setStatus(message) {
 
 function renderValue(value) {
   valueText.textContent = String(value);
+  setRangeFill(value);
 }
 
 function tabsQuery(queryInfo) {
@@ -72,6 +90,22 @@ async function getActiveYouTubeTabId() {
   return tab.id;
 }
 
+async function applyThemeFromActiveTab() {
+  try {
+    const tabId = await getActiveYouTubeTabId();
+    const response = await tabsSendMessage(tabId, { type: "get_theme" });
+    if (response && response.ok === true && (response.theme === "dark" || response.theme === "light")) {
+      setTheme(response.theme);
+      return;
+    }
+  } catch {
+    // Ignore and fall back to OS preference.
+  }
+
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  setTheme(prefersDark ? "dark" : "light");
+}
+
 async function loadSavedColumns() {
   const data = await storageGet({ youtubeColumns: DEFAULT_COLUMNS });
   const columns = Number(data.youtubeColumns) || DEFAULT_COLUMNS;
@@ -107,4 +141,6 @@ applyBtn.addEventListener("click", async () => {
 loadSavedColumns().catch((error) => {
   setStatus(`Init failed: ${error.message}`);
 });
+
+applyThemeFromActiveTab();
 
