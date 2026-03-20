@@ -1,8 +1,8 @@
-﻿{
+{
   "manifest_version": 3,
   "name": "YouTube Grid Simple",
   "version": "0.1.8",
-  "description": "Adjust YouTube video grid columns (2-8) and hide Shorts shelves.",
+  "description": "Adjust YouTube home grid columns, hide Shorts shelves, and clean up ads and news shelves.",
   "icons": {
     "128": "icon-128.png"
   },
@@ -20,10 +20,3 @@
     }
   ]
 }
-
-
-
-
-
-
-
