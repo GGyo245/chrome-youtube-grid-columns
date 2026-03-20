@@ -3,7 +3,7 @@
 ## [0.1.7] - 2026-03-20
 
 ### Fixed
-- Fixed Korean news shelf detection so sections such as "뉴스 속보" are hidden correctly.
+- Fixed Korean news shelf detection so sections such as "뉴스 속보" are hidden correctly.`r`n- Added German news shelf matching so sections such as "Eilmeldungen" are hidden correctly.
 
 ## [0.1.6] - 2026-03-05
 
@@ -14,3 +14,4 @@
 
 ### Fixed
 - Fixed range progress color rendering so values above 5 no longer appear incorrectly gray.
+
