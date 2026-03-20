@@ -136,7 +136,7 @@ function isShortsItem(item) {
     );
     const isNewsShelf = Boolean(
       shelfTitle &&
-        ["뉴스 속보", "속보", "뉴스", "breaking news", "top news", "news", "eilmeldungen", "eilmeldung", "nachrichten"].some((keyword) =>
+        ["뉴스 속보", "속보", "뉴스", "breaking news", "top news", "news", "eilmeldungen", "eilmeldung", "nachrichten", "ニュース速報", "速報", "ニュース"].some((keyword) =>
           shelfTitle.includes(keyword)
         )
     );
@@ -282,5 +282,6 @@ ensureRootObserver();
 loadAndApply().catch(() => {
   applyColumns(DEFAULT_COLUMNS);
 });
+
 
 
