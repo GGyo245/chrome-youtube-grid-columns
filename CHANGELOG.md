@@ -1,11 +1,15 @@
 ﻿# Changelog
 
+## [0.1.8] - 2026-03-20
+
+### Fixed
+- Added German news shelf matching so sections such as "Eilmeldungen" are hidden correctly.
+- Added Japanese news shelf matching so sections such as "ニュース速報" are hidden correctly.
+
 ## [0.1.7] - 2026-03-20
 
 ### Fixed
 - Fixed Korean news shelf detection so sections such as "뉴스 속보" are hidden correctly.
-- Added German news shelf matching so sections such as "Eilmeldungen" are hidden correctly.
-- Added Japanese news shelf matching so sections such as "ニュース速報" are hidden correctly.
 
 ## [0.1.6] - 2026-03-05
 
