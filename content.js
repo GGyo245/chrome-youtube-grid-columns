@@ -122,18 +122,21 @@ function isFullWidthItem(item) {
   );
 }
 
+function normalizeShelfTitle(value) {
+  return value?.replace(/\s+/g, " ").trim().toLowerCase() || "";
+}
+
 function isShortsItem(item) {
   if (!item) return false;
   const tagName = item.tagName?.toLowerCase();
 
   if (tagName === "ytd-rich-section-renderer") {
-    const shelfTitle = item
-      .querySelector(":scope > #content > ytd-rich-shelf-renderer #title")
-      ?.textContent?.trim()
-      ?.toLowerCase();
+    const shelfTitle = normalizeShelfTitle(
+      item.querySelector(":scope > #content > ytd-rich-shelf-renderer #title")?.textContent
+    );
     const isNewsShelf = Boolean(
       shelfTitle &&
-        ["?댁뒪 ?띾낫", "breaking news", "top news", "news", "?뗣깷?쇈궧?잌젿", "?잌젿?뗣깷?쇈궧"].some((keyword) =>
+        ["뉴스 속보", "속보", "뉴스", "breaking news", "top news", "news"].some((keyword) =>
           shelfTitle.includes(keyword)
         )
     );
@@ -279,3 +282,4 @@ ensureRootObserver();
 loadAndApply().catch(() => {
   applyColumns(DEFAULT_COLUMNS);
 });
+
