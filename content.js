@@ -197,7 +197,16 @@ function isShortsItem(item) {
     );
     const isSubscriptionsMetaShelf = Boolean(
       window.location.pathname === "/feed/subscriptions" &&
-        ["\uCD5C\uC2E0\uC21C", "\uAD00\uB828\uC131"].includes(plainShelfTitle || richShelfTitle)
+        [
+          "\uCD5C\uC2E0\uC21C",
+          "\uAD00\uB828\uC131",
+          "\u65B0\u3057\u3044\u9806",
+          "\u95A2\u9023\u304C\u5F37\u3044",
+          "latest",
+          "most relevant",
+          "neueste",
+          "relevanteste"
+        ].includes(plainShelfTitle || richShelfTitle)
     );
     const isShortsShelf = Boolean(
       item.querySelector(
@@ -361,6 +370,7 @@ ensureRootObserver();
 loadAndApply().catch(() => {
   scheduleApplyColumns(DEFAULT_COLUMNS);
 });
+
 
 
 
