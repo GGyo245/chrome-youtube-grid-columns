@@ -11,10 +11,10 @@
     "default_popup": "popup.html"
   },
   "permissions": ["storage", "tabs"],
-  "host_permissions": ["*://www.youtube.com/"],
+  "host_permissions": ["*://www.youtube.com/*"],
   "content_scripts": [
     {
-      "matches": ["*://www.youtube.com/"],
+      "matches": ["*://www.youtube.com/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }

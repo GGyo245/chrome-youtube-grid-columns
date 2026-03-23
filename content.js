@@ -65,9 +65,40 @@ function ensureStyleTag() {
   return styleTag;
 }
 
+function isSupportedGridRoute() {
+  return window.location.pathname === "/";
+}
+
+function clearGridOverrides() {
+  const styleTag = document.getElementById(STYLE_ID);
+  if (styleTag) {
+    styleTag.textContent = "";
+  }
+
+  document
+    .querySelectorAll(`.${FULL_WIDTH_CLASS}, .${HIDE_SHORTS_CLASS}, .${HIDE_ADS_CLASS}`)
+    .forEach((node) => {
+      node.classList.remove(FULL_WIDTH_CLASS, HIDE_SHORTS_CLASS, HIDE_ADS_CLASS);
+      if (node instanceof HTMLElement) {
+        node.style.removeProperty("display");
+      }
+    });
+
+  if (gridObserver) {
+    gridObserver.disconnect();
+    gridObserver = null;
+  }
+}
+
 function applyColumns(columns) {
   const safeColumns = clampColumns(columns);
   currentColumns = safeColumns;
+
+  if (!isSupportedGridRoute()) {
+    clearGridOverrides();
+    return;
+  }
+
   const styleTag = ensureStyleTag();
 
   styleTag.textContent = `
@@ -201,6 +232,11 @@ function markSpecialItems() {
 }
 
 function ensureGridObserver() {
+  if (!isSupportedGridRoute()) {
+    clearGridOverrides();
+    return;
+  }
+
   const container = document.querySelector("ytd-rich-grid-renderer #contents.ytd-rich-grid-renderer");
   if (!container) return;
 
@@ -222,6 +258,11 @@ function ensureRootObserver() {
   if (rootObserver) return;
 
   rootObserver = new MutationObserver(() => {
+    if (!isSupportedGridRoute()) {
+      clearGridOverrides();
+      return;
+    }
+
     markSpecialItems();
     ensureGridObserver();
   });
