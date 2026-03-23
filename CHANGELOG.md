@@ -1,10 +1,13 @@
-# Changelog
+﻿# Changelog
 
 ## [0.1.8] - 2026-03-20
 
 ### Fixed
 - Expanded localized news shelf detection for German and Japanese YouTube layouts.
 - Disabled the custom grid layout on YouTube pages such as /feed/you so non-home feeds keep their default sizing.
+- Applied the custom grid and shelf hiding on the subscriptions feed route (/feed/subscriptions).
+- Hid subscriptions feed shelves such as Shorts, 최신순, and 관련성 across YouTube SPA category navigation.
+- Strengthened shelf re-detection timing and page-wide scanning so hidden sections stay removed after in-page feed updates.
 
 ## [0.1.7] - 2026-03-20
 
@@ -20,3 +23,4 @@
 
 ### Fixed
 - Fixed range progress color rendering so values above 5 no longer appear incorrectly gray.
+

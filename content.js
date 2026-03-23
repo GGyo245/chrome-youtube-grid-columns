@@ -9,6 +9,8 @@ const HIDE_ADS_CLASS = "yt-grid-columns-controller-hide-ads";
 let gridObserver = null;
 let rootObserver = null;
 let currentColumns = DEFAULT_COLUMNS;
+let applyRetryTimers = [];
+let markSpecialItemsFrame = 0;
 
 function parseRgbColor(value) {
   if (!value) return null;
@@ -66,7 +68,7 @@ function ensureStyleTag() {
 }
 
 function isSupportedGridRoute() {
-  return window.location.pathname === "/";
+  return ["/", "/feed/subscriptions"].includes(window.location.pathname);
 }
 
 function clearGridOverrides() {
@@ -87,6 +89,25 @@ function clearGridOverrides() {
   if (gridObserver) {
     gridObserver.disconnect();
     gridObserver = null;
+  }
+}
+
+function clearApplyRetryTimers() {
+  for (const timerId of applyRetryTimers) {
+    window.clearTimeout(timerId);
+  }
+  applyRetryTimers = [];
+}
+
+function scheduleApplyColumns(columns) {
+  clearApplyRetryTimers();
+
+  for (const delay of [0, 200, 1000]) {
+    const timerId = window.setTimeout(() => {
+      applyColumns(columns);
+      applyRetryTimers = applyRetryTimers.filter((id) => id !== timerId);
+    }, delay);
+    applyRetryTimers.push(timerId);
   }
 }
 
@@ -143,8 +164,8 @@ function applyColumns(columns) {
     }
   `;
 
-  markSpecialItems();
-  ensureGridObserver();
+  scheduleMarkSpecialItems();
+    ensureGridObserver();
 }
 
 function isFullWidthItem(item) {
@@ -162,21 +183,29 @@ function isShortsItem(item) {
   const tagName = item.tagName?.toLowerCase();
 
   if (tagName === "ytd-rich-section-renderer") {
-    const shelfTitle = normalizeShelfTitle(
+    const richShelfTitle = normalizeShelfTitle(
       item.querySelector(":scope > #content > ytd-rich-shelf-renderer #title")?.textContent
     );
+    const plainShelfTitle = normalizeShelfTitle(
+      item.querySelector(":scope > #content > ytd-shelf-renderer #title")?.textContent
+    );
     const isNewsShelf = Boolean(
-      shelfTitle &&
-        ["뉴스 속보", "속보", "뉴스", "breaking news", "top news", "news", "eilmeldungen", "eilmeldung", "nachrichten", "ニュース速報", "速報", "ニュース"].some((keyword) =>
-          shelfTitle.includes(keyword)
+      richShelfTitle &&
+        ["\uB274\uC2A4 \uC18D\uBCF4", "\uC18D\uBCF4", "\uB274\uC2A4", "breaking news", "top news", "news", "eilmeldungen", "eilmeldung", "nachrichten", "\u30CB\u30E5\u30FC\u30B9\u901F\u5831", "\u901F\u5831", "\u30CB\u30E5\u30FC\u30B9"].some((keyword) =>
+          richShelfTitle.includes(keyword)
         )
     );
-
-    return Boolean(
-      item.querySelector(
-        ":scope > #content > ytd-rich-shelf-renderer[is-shorts], :scope > #content > ytd-chips-shelf-with-video-shelf-renderer"
-      ) || isNewsShelf
+    const isSubscriptionsMetaShelf = Boolean(
+      window.location.pathname === "/feed/subscriptions" &&
+        ["\uCD5C\uC2E0\uC21C", "\uAD00\uB828\uC131"].includes(plainShelfTitle || richShelfTitle)
     );
+    const isShortsShelf = Boolean(
+      item.querySelector(
+        ":scope > #content > ytd-rich-shelf-renderer[is-shorts], :scope > #content > ytd-chips-shelf-with-video-shelf-renderer, :scope > #content > ytd-rich-shelf-renderer a[href*='/feed/subscriptions/shorts'], :scope > #content > ytd-rich-shelf-renderer a[href*='/shorts/']"
+      ) || richShelfTitle === "shorts"
+    );
+
+    return Boolean(isShortsShelf || isNewsShelf || isSubscriptionsMetaShelf);
   }
 
   if (tagName === "ytd-rich-item-renderer") {
@@ -201,28 +230,36 @@ function isAdItem(item) {
   );
 }
 
-function markSpecialItems() {
-  const container = document.querySelector("ytd-rich-grid-renderer #contents.ytd-rich-grid-renderer");
-  if (!container) return;
+function scheduleMarkSpecialItems() {
+  if (markSpecialItemsFrame) return;
 
-  const children = Array.from(container.children);
-  for (const child of children) {
-    const shorts = isShortsItem(child);
-    const ad = isAdItem(child);
-    child.classList.toggle(HIDE_SHORTS_CLASS, shorts);
-    child.classList.toggle(HIDE_ADS_CLASS, ad);
+  markSpecialItemsFrame = window.requestAnimationFrame(() => {
+    markSpecialItemsFrame = 0;
+    markSpecialItems();
+  });
+}
+
+function markSpecialItems() {
+  const sectionItems = Array.from(document.querySelectorAll("ytd-rich-section-renderer, ytd-rich-item-renderer, ytd-reel-shelf-renderer"));
+  if (!sectionItems.length) return;
+
+  for (const item of sectionItems) {
+    const shorts = isShortsItem(item);
+    const ad = isAdItem(item);
+    item.classList.toggle(HIDE_SHORTS_CLASS, shorts);
+    item.classList.toggle(HIDE_ADS_CLASS, ad);
 
     if (shorts || ad) {
-      child.style.setProperty("display", "none", "important");
-    } else {
-      child.style.removeProperty("display");
+      if (item instanceof HTMLElement) {
+        item.style.setProperty("display", "none", "important");
+      }
+    } else if (item instanceof HTMLElement) {
+      item.style.removeProperty("display");
     }
   }
 
-  const items = children.filter(
-    (node) => node.tagName && node.tagName.toLowerCase() === "ytd-rich-item-renderer"
-  );
-  for (const item of items) {
+  const richItems = Array.from(document.querySelectorAll("ytd-rich-item-renderer"));
+  for (const item of richItems) {
     if (item.classList.contains(HIDE_SHORTS_CLASS) || item.classList.contains(HIDE_ADS_CLASS)) {
       item.classList.remove(FULL_WIDTH_CLASS);
       continue;
@@ -230,7 +267,6 @@ function markSpecialItems() {
     item.classList.toggle(FULL_WIDTH_CLASS, isFullWidthItem(item));
   }
 }
-
 function ensureGridObserver() {
   if (!isSupportedGridRoute()) {
     clearGridOverrides();
@@ -245,12 +281,14 @@ function ensureGridObserver() {
   }
 
   gridObserver = new MutationObserver(() => {
-    markSpecialItems();
+    scheduleMarkSpecialItems();
   });
 
   gridObserver.observe(container, {
     childList: true,
-    subtree: true
+    subtree: true,
+    attributes: true,
+    characterData: true
   });
 }
 
@@ -263,7 +301,7 @@ function ensureRootObserver() {
       return;
     }
 
-    markSpecialItems();
+    scheduleMarkSpecialItems();
     ensureGridObserver();
   });
 
@@ -287,7 +325,7 @@ function storageGet(defaults) {
 
 async function loadAndApply() {
   const result = await storageGet({ youtubeColumns: DEFAULT_COLUMNS });
-  applyColumns(result.youtubeColumns);
+  scheduleApplyColumns(result.youtubeColumns);
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -312,17 +350,23 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local") return;
   if (!changes.youtubeColumns) return;
-  applyColumns(changes.youtubeColumns.newValue);
+  scheduleApplyColumns(changes.youtubeColumns.newValue);
 });
 
 document.addEventListener("yt-navigate-finish", () => {
-  applyColumns(currentColumns);
+  scheduleApplyColumns(currentColumns);
 });
 
 ensureRootObserver();
 loadAndApply().catch(() => {
-  applyColumns(DEFAULT_COLUMNS);
+  scheduleApplyColumns(DEFAULT_COLUMNS);
 });
+
+
+
+
+
+
 
 
 
