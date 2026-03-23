@@ -4,6 +4,7 @@
 
 ### Fixed
 - Expanded localized news shelf detection for German and Japanese YouTube layouts.
+- Disabled the custom grid layout on YouTube pages such as /feed/you so non-home feeds keep their default sizing.
 
 ## [0.1.7] - 2026-03-20
 
