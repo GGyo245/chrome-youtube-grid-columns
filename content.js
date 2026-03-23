@@ -11,6 +11,7 @@ let rootObserver = null;
 let currentColumns = DEFAULT_COLUMNS;
 let applyRetryTimers = [];
 let markSpecialItemsFrame = 0;
+let navigationInProgress = false;
 
 function parseRgbColor(value) {
   if (!value) return null;
@@ -116,7 +117,9 @@ function applyColumns(columns) {
   currentColumns = safeColumns;
 
   if (!isSupportedGridRoute()) {
-    clearGridOverrides();
+    if (!navigationInProgress) {
+      clearGridOverrides();
+    }
     return;
   }
 
@@ -278,7 +281,9 @@ function markSpecialItems() {
 }
 function ensureGridObserver() {
   if (!isSupportedGridRoute()) {
-    clearGridOverrides();
+    if (!navigationInProgress) {
+      clearGridOverrides();
+    }
     return;
   }
 
@@ -306,7 +311,9 @@ function ensureRootObserver() {
 
   rootObserver = new MutationObserver(() => {
     if (!isSupportedGridRoute()) {
-      clearGridOverrides();
+      if (!navigationInProgress) {
+        clearGridOverrides();
+      }
       return;
     }
 
@@ -362,7 +369,14 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   scheduleApplyColumns(changes.youtubeColumns.newValue);
 });
 
+document.addEventListener("yt-navigate-start", () => {
+  navigationInProgress = true;
+  scheduleMarkSpecialItems();
+  scheduleApplyColumns(currentColumns);
+});
+
 document.addEventListener("yt-navigate-finish", () => {
+  navigationInProgress = false;
   scheduleApplyColumns(currentColumns);
 });
 
@@ -370,6 +384,7 @@ ensureRootObserver();
 loadAndApply().catch(() => {
   scheduleApplyColumns(DEFAULT_COLUMNS);
 });
+
 
 
 
