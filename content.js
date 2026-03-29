@@ -198,8 +198,19 @@ function isShortsItem(item) {
           richShelfTitle.includes(keyword)
         )
     );
+    const hasPostShelf = Boolean(
+      item.querySelector(":scope > #content > ytd-rich-shelf-renderer ytd-post-renderer")
+    );
     const isLatestPostsShelf = Boolean(
-      ["\uCD5C\uC2E0 youtube \uAC8C\uC2DC\uBB3C"].includes(richShelfTitle)
+      hasPostShelf &&
+        [
+          "\uCD5C\uC2E0 youtube \uAC8C\uC2DC\uBB3C",
+          "latest youtube posts",
+          "neueste youtube-beitr\u00e4ge",
+          "neueste youtube posts",
+          "\u6700\u65B0 youtube \u6295\u7A3F",
+          "\u6700\u65B0\u306E youtube \u6295\u7A3F"
+        ].some((title) => richShelfTitle.includes(title))
     );
     const isSubscriptionsMetaShelf = Boolean(
       window.location.pathname === "/feed/subscriptions" &&
