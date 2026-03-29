@@ -198,6 +198,9 @@ function isShortsItem(item) {
           richShelfTitle.includes(keyword)
         )
     );
+    const isLatestPostsShelf = Boolean(
+      ["\uCD5C\uC2E0 youtube \uAC8C\uC2DC\uBB3C"].includes(richShelfTitle)
+    );
     const isSubscriptionsMetaShelf = Boolean(
       window.location.pathname === "/feed/subscriptions" &&
         [
@@ -217,7 +220,7 @@ function isShortsItem(item) {
       ) || richShelfTitle === "shorts"
     );
 
-    return Boolean(isShortsShelf || isNewsShelf || isSubscriptionsMetaShelf);
+    return Boolean(isShortsShelf || isNewsShelf || isLatestPostsShelf || isSubscriptionsMetaShelf);
   }
 
   if (tagName === "ytd-rich-item-renderer") {

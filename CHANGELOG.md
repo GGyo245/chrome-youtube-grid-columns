@@ -6,6 +6,7 @@
 - Expanded localized news shelf detection for German and Japanese YouTube layouts.
 - Disabled the custom grid layout on YouTube pages such as /feed/you so non-home feeds keep their default sizing.
 - Applied the custom grid and shelf hiding on the subscriptions feed route (/feed/subscriptions).
+- Hid the `최신 YouTube 게시물` shelf on supported YouTube feeds.
 
 ## [0.1.7] - 2026-03-20
 
