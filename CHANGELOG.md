@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## [0.1.9] - 2026-07-10
+
+### Fixed
+- Hid brand video shelf sections rendered via `ytd-brand-video-shelf-renderer` on supported YouTube feeds.
+
 ## [0.1.8] - 2026-03-20
 
 ### Fixed
@@ -22,4 +27,3 @@
 
 ### Fixed
 - Fixed range progress color rendering so values above 5 no longer appear incorrectly gray.
-

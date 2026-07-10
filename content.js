@@ -230,8 +230,17 @@ function isShortsItem(item) {
         ":scope > #content > ytd-rich-shelf-renderer[is-shorts], :scope > #content > ytd-chips-shelf-with-video-shelf-renderer, :scope > #content > ytd-rich-shelf-renderer a[href*='/feed/subscriptions/shorts'], :scope > #content > ytd-rich-shelf-renderer a[href*='/shorts/']"
       ) || richShelfTitle === "shorts"
     );
+    const isBrandVideoShelf = Boolean(
+      item.querySelector(":scope > #content > ytd-brand-video-shelf-renderer")
+    );
 
-    return Boolean(isShortsShelf || isNewsShelf || isLatestPostsShelf || isSubscriptionsMetaShelf);
+    return Boolean(
+      isShortsShelf ||
+        isNewsShelf ||
+        isLatestPostsShelf ||
+        isSubscriptionsMetaShelf ||
+        isBrandVideoShelf
+    );
   }
 
   if (tagName === "ytd-rich-item-renderer") {
@@ -398,6 +407,7 @@ ensureRootObserver();
 loadAndApply().catch(() => {
   scheduleApplyColumns(DEFAULT_COLUMNS);
 });
+
 
 
 
