@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## [0.2.0] - 2026-07-11
+
+### Fixed
+- Added a direct CSS fallback that hides brand video shelves even when SPA rendering skips JavaScript shelf detection.
+
 ## [0.1.9] - 2026-07-10
 
 ### Fixed
