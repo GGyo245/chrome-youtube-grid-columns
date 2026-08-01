@@ -10,6 +10,9 @@ Control how videos are displayed on YouTube in Chrome, with custom grid layout s
 - Hide Shorts shelves to keep the main grid clean
 - Hide in-feed ad sections for a cleaner feed
 - Hide localized news shelves with support for Korean, English, German, and Japanese variants
+- Hide localized latest-post shelves on supported feeds
+- Hide brand video and membership recommendation shelves
+- Hide YouTube Playables game shelves using language-independent detection
 
 ## Usage
 
