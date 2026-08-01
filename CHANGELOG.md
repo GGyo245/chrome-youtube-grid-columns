@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## [0.2.1] - 2026-08-02
+
+### Fixed
+- Hid YouTube Playables game shelves using language-independent structural detection.
+
 ## [0.2.0] - 2026-07-11
 
 ### Fixed

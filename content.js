@@ -171,6 +171,12 @@ function applyColumns(columns) {
     ) {
       display: none !important;
     }
+
+    ytd-rich-grid-renderer #contents.ytd-rich-grid-renderer > ytd-rich-section-renderer:has(
+      > #content > ytd-rich-shelf-renderer a[href^="/playables"]
+    ) {
+      display: none !important;
+    }
   `;
 
   scheduleMarkSpecialItems();
@@ -239,13 +245,19 @@ function isShortsItem(item) {
     const isBrandVideoShelf = Boolean(
       item.querySelector(":scope > #content > ytd-brand-video-shelf-renderer")
     );
+    const isPlayablesShelf = Boolean(
+      item.querySelector(
+        ':scope > #content > ytd-rich-shelf-renderer a[href^="/playables"], :scope > #content > ytd-rich-shelf-renderer ytd-mini-game-card-view-model'
+      )
+    );
 
     return Boolean(
       isShortsShelf ||
         isNewsShelf ||
         isLatestPostsShelf ||
         isSubscriptionsMetaShelf ||
-        isBrandVideoShelf
+        isBrandVideoShelf ||
+        isPlayablesShelf
     );
   }
 
